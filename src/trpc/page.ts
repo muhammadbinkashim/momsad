@@ -1,8 +1,9 @@
 import { publicProcedure, router } from "./trpc";
+import { authRouter } from "./auth-router";
 
 export const appRouter = router({
   aniApiRouter: publicProcedure.query(() => {
-    return 'hello'
+    auth:authRouter
   })
 })
 

@@ -9,7 +9,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@/lib/utils";
-import { AuthCredentialsValidator, TAuthCredentialsValidator } from "@/validators/account-credentials-validator";
+import { trpc } from "@/trpc/client";
+import { AuthCredentialsValidator, TAuthCredentialsValidator } from "@/lib/validators/account-credentials-validator";
 
 const Page = () => {
 
@@ -21,6 +22,8 @@ const Page = () => {
   } = useForm<TAuthCredentialsValidator>({
     resolver: zodResolver(AuthCredentialsValidator)
   });
+
+
 
   const onSubmit = ({email,password}: TAuthCredentialsValidator) => {
     // send data to server

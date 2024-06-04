@@ -1,6 +1,6 @@
-import * as initTrpc from '@trpc/server';
+import { initTRPC } from '@trpc/server';
 
-const t = initTrpc.context().create()
+const t = initTRPC.create();
 
-export const router = t.router
-export const publicProcedure = t.publicProcedure
+export const router = t.router;
+export const publicProcedure = t.procedure;

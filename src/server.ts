@@ -1,35 +1,49 @@
 import express from "express";
 import { getPayloadClient } from "./get-payload";
 import { nextApp, nextHandler } from "./next-utils";
+import { appRouter } from "./trpc/page";
+import * as trpcExpress from '@trpc/server/adapters/express'
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
-interface ExtendedInitOptions {
-  express?: express.Express;
-  mongoURL?: string;
-  onInit?: (cms: any) => void;
-}
+const createContext = ({
+  req,
+  res,
+}: trpcExpress.CreateExpressContextOptions) => ({
+  req,
+  res,
+})
 
 const start = async () => {
-  const initOptions: ExtendedInitOptions = {
-    express: app,
-    mongoURL: process.env.MONGODB_URI,
-    onInit: async (cms) => {
-      cms.logger.info(`Admin URL: ${cms.getAdminURL()}`);
+  const payload = await getPayloadClient({
+    initOptions: {
+      express: app,
+      onInit: async (cms) => {
+        cms.logger.info(`Admin URL: ${cms.getAdminURL()}`)
+      }
     },
-  };
+  })
 
-  const payload = await getPayloadClient({ initOptions });
-  app.use((req, res) => nextHandler(req, res));
+  app.use(
+    '/api/trpc',
+    trpcExpress.createExpressMiddleware({
+      router: appRouter,
+      createContext,
+    })
+  )
 
+  app.use((req, res) => nextHandler(req, res))
+  
   nextApp.prepare().then(() => {
+    payload.logger.info('Next.js started')
+
     app.listen(PORT, async () => {
-      console.log(`Server started on port ${PORT}`);
+      payload.logger.info(
+        `Next.js App URL: ${process.env.NEXT_PUBLIC_SERVER_URL}`
+      )
     });
   });
 };
 
-start().catch(err => {
-  console.error('Failed to start the server:', err);
-});
+start()
