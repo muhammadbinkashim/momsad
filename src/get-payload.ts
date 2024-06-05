@@ -1,18 +1,24 @@
+import { error } from "console";
 import dotenv from "dotenv";
 import path from "path";
-import payload from "payload";
 import type { InitOptions } from "payload/config";
+import payload, { Payload } from "payload";
 
 dotenv.config({
-  path: path.resolve(__dirname, "../.env")
+  path: path.resolve(__dirname, "../.env"),
 });
+
+// Debugging logs
+console.log("PAYLOAD_SECRET:", process.env.PAYLOAD_SECRET);
+console.log("MONGODB_URL:", process.env.MONGODB_URL);
+console.log("NEXT_PUBLIC_SERVER_URL:", process.env.NEXT_PUBLIC_SERVER_URL);
 
 let cached = (global as any).payload;
 
 if (!cached) {
   cached = (global as any).payload = {
     client: null,
-    promise: null
+    promise: null,
   };
 }
 
@@ -20,21 +26,29 @@ interface Args {
   initOptions?: Partial<InitOptions>;
 }
 
-export const getPayloadClient = async ({ initOptions }: Args = {}) => {
+export const getPayloadClient = async ({ initOptions }: Args = {}):Promise<Payload> => {
   if (!process.env.PAYLOAD_SECRET) {
-    throw new Error('PAYLOAD_SECRET is MISSING');
+    throw new Error("PAYLOAD_SECRET is missing");
   }
-  if (!cached.client) {  // This should check if client is not cached
+
+  if (cached.client) {
+    return cached.client;
+  }
+
+  if (!cached.promise) {
     cached.promise = payload.init({
       secret: process.env.PAYLOAD_SECRET,
-      local: initOptions ? (initOptions.express ? false : true) : true,
-      ...(initOptions || {})
+      local: initOptions?.express ? false : true,
+      ...(initOptions || {}),
     });
   }
+
   try {
     cached.client = await cached.promise;
-  } catch (error: unknown) {
-    throw error;
+  } catch (e: unknown) {
+    cached.promise = null;
+    throw e;
   }
-  return cached.client
+
+  return cached.client;
 };

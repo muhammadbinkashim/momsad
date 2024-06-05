@@ -1,13 +1,13 @@
-import { Ghost } from "lucide-react";
+import React from "react";
 import MaxWidthWrapper from "./MaxWidthWrapper";
-import { Icons } from "./icons";
-import Navitems from "./Navitems";
+import Link from "next/link";
+import { Icons } from "./Icons";
+import NavItems from "./NavItems";
 import { buttonVariants } from "./ui/button";
-import Link from "next/link"; // Assuming you are using Next.js
 import Cart from "./Cart";
 
 const Navbar = () => {
-  const user = null; // Mock user state, replace with actual user state in your application
+  const user = null;
 
   return (
     <div className="bg-white sticky z-50 top-0 inset-x-0 h-16">
@@ -15,20 +15,19 @@ const Navbar = () => {
         <MaxWidthWrapper>
           <div className="border-b border-gray-200">
             <div className="flex h-16 items-center">
-              {/* TODO: Mobile nav */}
+              {/* {TODO : MOBILE NAV} */}
+
               <div className="ml-4 flex lg:ml-0">
                 <Link href="/">
                   <Icons.logo className="h-10 w-10" />
                 </Link>
               </div>
-
               <div className="hidden z-50 lg:ml-8 lg:block lg:self-stretch">
-                <Navitems />
+                <NavItems />
               </div>
-
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                {user ? null : (
+                  {user ? null : (
                     <Link
                       href="/sign-in"
                       className={buttonVariants({
@@ -68,6 +67,7 @@ const Navbar = () => {
                       />
                     </div>
                   )}
+
                   <div className="ml-4 flow-root lg:ml-6">
                     <Cart />
                   </div>
