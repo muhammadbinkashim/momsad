@@ -1,119 +1,125 @@
-import { PRODUCT_CATEGORIES } from "@/config"
-import { CollectionConfig } from "payload/types"
+import { PRODUCT_CATEGORIES } from "../../config";
+import { CollectionConfig } from "payload/types";
 
 export const Products: CollectionConfig = {
-  slug: 'products',
+  slug: "products",
   admin: {
-    useAsTitle: 'name',
+    useAsTitle: "name",
   },
   access: {},
   fields: [
     {
-      name: 'user',
-      type: 'relationship',
-      relationTo: 'users',
+      name: "user",
+      type: "relationship",
+      relationTo: "users",
       required: true,
       hasMany: false,
       admin: {
-        condition: () => false
-      }
+        condition: () => false,
+      },
     },
     {
-      name: 'name',
-      label: 'Name',
-      type: 'text',
-      required: true
-    },
-    {
-      name: 'description',
-      type: 'textarea',
-      label: 'Product details',
-    },
-    {
-      name: 'category',
-      label: 'Category',
-      type: 'select',
-      options: PRODUCT_CATEGORIES.map(
-        ({label,value}) => ({label,value})
-      ),
-      required:true
-    },
-    {
-      name: 'product_file',
-      label: 'Product file(s)',
-      type: 'relationship',
+      name: "name",
+      label: "Name",
+      type: "text",
       required: true,
-      relationTo: 'product_file',
-      hasMany: false
     },
     {
-      name: 'approvedforsale',
-      label: 'Product Status',
-      type: 'select',
-      defaultValue: 'pending',
+      name: "description",
+      label: "Description",
+      type: "textarea",
+    },
+    {
+      name: "price",
+      label: "Price",
+      min: 0,
+      max: 1000,
+      type: "number",
+      required: true,
+    },
+    {
+      name: "category",
+      label: "Category",
+      type: "select",
+      options: PRODUCT_CATEGORIES.map(({ label, value }) => ({ label, value })),
+      required: true,
+    },
+    {
+      name: "product_files",
+      label: "Product File(s)",
+      type: "relationship",
+      required: true,
+      relationTo: "product_files",
+      hasMany: false,
+    },
+    {
+      name: "approvedForSale",
+      label: "Product Status",
+      type: "select",
+      defaultValue: "pending",
       access: {
-        create: ({ req }) => req.user.role === 'admin',
-        read: ({ req }) => req.user.role === 'admin',
-        update: ({req}) => req.user.role === 'admin',
+        create: ({ req }) => req.user.role === "admin",
+        read: ({ req }) => req.user.role === "admin",
+        update: ({ req }) => req.user.role === "admin",
       },
       options: [
         {
-          label: 'Pending verification',
-          value: 'pending',
+          label: "Pending verification",
+          value: "pending",
         },
         {
-          label: 'Approved',
-          value: 'approved',
+          label: "Approved",
+          value: "approved",
         },
         {
-          label: 'Denied',
-          value: 'denied',
+          label: "Declined",
+          value: "declined",
         },
       ],
     },
     {
-      name: 'priceId',
+      name: "priceID",
       access: {
         create: () => false,
         read: () => false,
-        update: ()=> false,
+        update: () => false,
       },
-      type: 'text',
+      type: "text",
       admin: {
         hidden: true,
       },
     },
     {
-      name: 'stripeId',
+      name: "stripeID",
       access: {
         create: () => false,
         read: () => false,
-        update: ()=> false,
+        update: () => false,
       },
-      type: 'text',
+      type: "text",
       admin: {
         hidden: true,
       },
     },
     {
-      name: 'image',
-      type: 'array',
-      label: 'Product images',
+      name: "images",
+      type: "array",
+      label: "Product images",
       minRows: 1,
       maxRows: 4,
       required: true,
       labels: {
-        singular: 'Image',
-        plural: 'Images',
+        singular: "Image",
+        plural: "Images",
       },
       fields: [
         {
-          name: 'image',
-          type: 'upload',
-          relationTo: 'media',
-          required:true
+          name: "image",
+          type: "upload",
+          relationTo: "media",
+          required: true,
         },
       ],
     },
   ],
-}
+};

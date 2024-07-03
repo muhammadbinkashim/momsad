@@ -57,5 +57,9 @@
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5"
-  }
+  },
+  "main": "index.js",
+  "repository": "https://github.com/muhammadbinkashim/momsad.git",
+  "author": "momsad <momsad882@gmail.com>",
+  "license": "MIT"
 }

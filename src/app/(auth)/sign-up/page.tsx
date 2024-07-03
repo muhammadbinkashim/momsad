@@ -108,6 +108,7 @@ const Page = () => {
                   <p className="text-red-500">{errors.password.message}</p>
                 )}
               </div>
+
               <Button>Sign up</Button>
             </div>
           </form>
